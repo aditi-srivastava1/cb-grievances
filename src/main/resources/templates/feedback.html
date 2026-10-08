@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Give Feedback')}"></head>
+<body>
+<nav th:replace="~{fragments :: residentNav}"></nav>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+
+            <div class="page-header">
+                <div class="page-icon"><i class="bi bi-chat-heart"></i></div>
+                <div>
+                    <h3 class="page-title mb-0">Give Feedback</h3>
+                    <div class="page-sub">Give your valuable feedback here </div>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="text-muted small mb-1">Your complaint</div>
+                    <div class="fw-semibold" th:text="${complaint.category}"></div>
+                    <div th:text="${complaint.description}"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body p-4">
+                    <form th:action="@{/feedback/{id}(id=${complaint.id})}" th:object="${feedback}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">How satisfied are you with the resolution?</label>
+                            <select th:field="*{starRating}" class="form-select">
+                                <option value="5">5 - Excellent</option>
+                                <option value="4">4 - Good</option>
+                                <option value="3">3 - Average</option>
+                                <option value="2">2 - Poor</option>
+                                <option value="1">1 - Very Poor</option>
+                            </select>
+                            <div class="form-text">A rating of 2 or lower lets you reopen the complaint.</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Comment
+                                <span class="text-muted fw-normal">(optional)</span>
+                            </label>
+                            <textarea th:field="*{comment}" rows="4" class="form-control" maxlength="255"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="bi bi-check2-circle me-1"></i>Submit Feedback
+                        </button>
+                        <a th:href="@{/my-complaints}" class="btn btn-outline-secondary">Back</a>
+                    </form>
+                </div>
+            </div>
+
+            <footer th:replace="~{fragments :: appFooter}"></footer>
+        </div>
+    </div>
+</div>
+</body>
+</html>

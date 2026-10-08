@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${title} + ' - CB Grievances'">CB Grievances</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+    <link th:href="@{/css/style.css}" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+</head>
+<body>
+
+<nav th:fragment="residentNav" class="navbar navbar-dark app-navbar mb-4">
+    <div class="container d-flex flex-wrap gap-2">
+        <a class="navbar-brand fw-bold" th:href="@{/}"><i class="bi bi-building me-2"></i>CB Grievances</a>
+        <div class="d-flex flex-wrap align-items-center gap-3">
+            <a class="nav-item-link" th:href="@{/}"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a>
+            <a class="nav-item-link" th:href="@{/complaint}"><i class="bi bi-plus-circle me-1"></i>File Complaint</a>
+            <a class="nav-item-link" th:href="@{/my-complaints}"><i class="bi bi-list-check me-1"></i>My Complaints</a>
+
+            <div class="dropdown">
+                <a href="#" class="text-white position-relative" data-bs-toggle="dropdown"
+                   data-bs-auto-close="outside" aria-expanded="false" aria-label="Notifications">
+                    <i class="bi bi-bell fs-5"></i>
+                    <span th:if="${unreadCount != null and unreadCount > 0}"
+                          class="notif-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                          th:text="${unreadCount}"></span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end p-0" style="min-width:320px;">
+                    <div class="list-group list-group-flush">
+                        <a th:each="n : ${notifications}" th:href="@{/my-complaints}"
+                           class="list-group-item list-group-item-action"
+                           th:classappend="${!n.seen} ? 'fw-bold'">
+                            <div class="small" th:text="${n.message}"></div>
+                            <div class="text-muted small fw-normal"
+                                 th:text="${#temporals.format(n.createdAt, 'dd MMM yyyy, HH:mm')}"></div>
+                        </a>
+                        <div th:if="${notifications == null or #lists.isEmpty(notifications)}"
+                             class="list-group-item text-muted small">No notifications yet.</div>
+                    </div>
+                    <form th:if="${unreadCount != null and unreadCount > 0}"
+                          th:action="@{/notifications/read-all}" method="post" class="p-2 border-top">
+                        <button type="submit" class="btn btn-sm btn-outline-primary w-100">Mark all as read</button>
+                    </form>
+                </div>
+            </div>
+
+            <form th:action="@{/logout}" method="post" class="m-0">
+                <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<nav th:fragment="wardenNav" class="navbar navbar-dark app-navbar app-navbar-warden mb-4">
+    <div class="container-fluid px-4 d-flex flex-wrap gap-2">
+        <a class="navbar-brand fw-bold" th:href="@{/}">
+            <i class="bi bi-building me-2"></i>CB Grievances
+            <span class="badge bg-warning text-dark ms-2">Warden</span>
+        </a>
+        <form th:action="@{/logout}" method="post" class="m-0">
+            <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+        </form>
+    </div>
+</nav>
+
+<span th:fragment="statusBadge(status)" class="badge"
+      th:text="${status}"
+      th:classappend="'status-' + ${#strings.replace(#strings.toLowerCase(status), ' ', '-')}"></span>
+
+<footer th:fragment="appFooter" class="app-footer text-center text-muted small py-4 mt-4">
+    Made with ☕ for Chandrabhaga Hostel &middot; CB Grievances
+</footer>
+
+</body>
+</html>

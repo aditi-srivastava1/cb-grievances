@@ -1,0 +1,11 @@
+# Copy the variable names below into your environment (IntelliJ Run configuration,
+# or your server's settings). Never commit real values.
+#
+# DB_USERNAME=root
+# DB_PASSWORD=<your MySQL password>
+# MAIL_USERNAME=<gmail address that sends the emails>
+# MAIL_PASSWORD=<16-character Gmail app password>
+# MAIL_TEST_RECIPIENT=<inbox for test emails; leave empty in production>
+# WARDEN_EMAIL=<first warden login>
+# WARDEN_PASSWORD=<first warden password, 8 to 72 characters>
+# WARDEN_NAME=<first warden display name>

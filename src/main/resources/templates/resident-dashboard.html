@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Dashboard')}"></head>
+<body>
+<nav th:replace="~{fragments :: residentNav}"></nav>
+
+<div class="container">
+    <div class="page-header">
+        <div class="page-icon"><i class="bi bi-house-heart"></i></div>
+        <div>
+            <h3 class="page-title mb-0">Hey, <span th:text="${resident.name}"></span> 🤠</h3>
+            <div class="page-sub">
+                What's the matter today? :' &middot;
+                <span th:text="${resident.wing}"></span> Wing, Room <span th:text="${resident.roomNumber}"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-3">
+        <div class="col-6 col-lg-3">
+            <div class="card stat-card" style="--accent:#8a5a3c; --accent-soft:#f3e7da;">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="stat-icon"><i class="bi bi-inbox"></i></div>
+                    <div>
+                        <div class="stat-value" th:text="${total}"></div>
+                        <div class="text-muted small">Total</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card stat-card" style="--accent:#d97706; --accent-soft:#fef3c7;">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="stat-icon"><i class="bi bi-hourglass-split"></i></div>
+                    <div>
+                        <div class="stat-value" th:text="${pending}"></div>
+                        <div class="text-muted small">Pending</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card stat-card" style="--accent:#0e7490; --accent-soft:#cffafe;">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="stat-icon"><i class="bi bi-gear"></i></div>
+                    <div>
+                        <div class="stat-value" th:text="${inProcess}"></div>
+                        <div class="text-muted small">In Process</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card stat-card" style="--accent:#15803d; --accent-soft:#dcfce7;">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
+                    <div>
+                        <div class="stat-value" th:text="${completed}"></div>
+                        <div class="text-muted small">Completed</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${total == 0}" class="alert alert-info">
+
+    </div>
+
+    <div th:if="${awaitingFeedback > 0}" class="alert alert-info d-flex align-items-center">
+        <i class="bi bi-chat-heart me-2"></i>
+        <div>
+            You have <b th:text="${awaitingFeedback}"></b> completed complaint(s) waiting for your feedback.
+            <a th:href="@{/my-complaints}" class="alert-link">Give feedback</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body p-4">
+            <h5 class="fw-bold mb-3"> </h5>
+            <a th:href="@{/complaint}" class="btn btn-primary me-2">
+                <i class="bi bi-plus-circle me-1"></i>File a New Complaint
+            </a>
+            <a th:href="@{/my-complaints}" class="btn btn-outline-primary">
+                <i class="bi bi-list-check me-1"></i>My Complaints
+            </a>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments :: appFooter}"></footer>
+</div>
+</body>
+</html>

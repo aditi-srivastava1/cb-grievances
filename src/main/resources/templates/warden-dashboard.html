@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Warden Dashboard')}"></head>
+<body>
+<nav th:replace="~{fragments :: wardenNav}"></nav>
+
+<div class="container-fluid px-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+        <div class="page-header">
+            <div class="page-icon"><i class="bi bi-clipboard-data"></i></div>
+            <div>
+                <h3 class="page-title mb-0">Warden Dashboard</h3>
+                <div class="page-sub">
+                    Showing <b th:text="${selectedWing != null ? selectedWing + ' Wing' : 'all wings'}"></b>
+                    (<span th:text="${#lists.size(complaints)}"></span> complaints)
+                </div>
+            </div>
+        </div>
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/warden/dashboard}"
+                   th:classappend="${selectedWing == null} ? 'active'">All</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/warden/dashboard(wing='Boys')}"
+                   th:classappend="${selectedWing == 'Boys'} ? 'active'">Boys Wing</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/warden/dashboard(wing='Girls')}"
+                   th:classappend="${selectedWing == 'Girls'} ? 'active'">Girls Wing</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                <tr>
+                    <th>Resident</th>
+                    <th>Wing</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Photo</th>
+                    <th>Date Filed</th>
+                    <th>Status</th>
+                    <th>Feedback</th>
+                    <th>Update Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="complaint : ${complaints}">
+                    <td>
+                        <div class="fw-semibold" th:text="${complaint.resident.name}"></div>
+                        <div class="text-muted small" th:text="${complaint.resident.jnuId}"></div>
+                    </td>
+                    <td th:text="${complaint.wing}"></td>
+                    <td class="fw-semibold" th:text="${complaint.category}"></td>
+                    <td th:text="${complaint.description}"></td>
+                    <td>
+                        <a th:if="${complaint.photoFileName != null}"
+                           th:href="@{/photos/{f}(f=${complaint.photoFileName})}" target="_blank">
+                            <img th:src="@{/photos/{f}(f=${complaint.photoFileName})}"
+                                 class="img-thumbnail" style="width:80px;" alt="photo"/>
+                        </a>
+                        <span th:if="${complaint.photoFileName == null}" class="text-muted">-</span>
+                    </td>
+                    <td class="text-nowrap" th:text="${complaint.dateFiled}"></td>
+                    <td><span th:replace="~{fragments :: statusBadge(${complaint.status})}"></span></td>
+                    <td>
+                        <span th:if="${feedbackMap.containsKey(complaint.id)}">
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <b th:text="${feedbackMap.get(complaint.id).starRating} + '/5'"></b>
+                            <span class="d-block small text-muted"
+                                  th:text="${feedbackMap.get(complaint.id).comment}"></span>
+                        </span>
+                        <span th:unless="${feedbackMap.containsKey(complaint.id)}" class="text-muted">-</span>
+                    </td>
+                    <td>
+                        <form th:action="@{/warden/complaint/{id}/status(id=${complaint.id})}" method="post"
+                              class="d-flex gap-1">
+                            <input type="hidden" name="wing" th:value="${selectedWing}"/>
+                            <select name="status" class="form-select form-select-sm" style="min-width:130px;">
+                                <option value="Pending" th:selected="${complaint.status == 'Pending'}">Pending</option>
+                                <option value="Reopened" th:selected="${complaint.status == 'Reopened'}">Reopened</option>
+                                <option value="In Process" th:selected="${complaint.status == 'In Process'}">In Process</option>
+                                <option value="Completed" th:selected="${complaint.status == 'Completed'}">Completed</option>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(complaints)}">
+                    <td colspan="9" class="text-center text-muted py-5">
+                        <div class="fs-1">🕊️</div>
+                        No complaints to show. Shaanti hai!
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments :: appFooter}"></footer>
+</div>
+</body>
+</html>

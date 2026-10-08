@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Login')}"></head>
+<body>
+
+<div id="splash" class="splash" aria-hidden="true">
+    <div>
+        <div class="splash-emoji">🏠</div>
+        <h1 class="splash-title">Welcome To Cb Grievances ᯓ  ✈︎</h1>
+        <p class="splash-sub" >Chandrabhaga Hostel Grievance Portal.</p>
+        <small class="opacity-75"></small>
+    </div>
+</div>
+<script>
+    (function () {
+        var splash = document.getElementById('splash');
+        try {
+            if (sessionStorage.getItem('splashSeen')) {
+                splash.remove();
+            } else {
+                sessionStorage.setItem('splashSeen', '1');
+                splash.addEventListener('click', function () { splash.remove(); });
+            }
+        } catch (e) { /* storage blocked: the CSS still fades it out */ }
+    })();
+</script>
+
+<div class="auth-bg d-flex align-items-center py-4">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-9">
+                <div class="card auth-card">
+                    <div class="row g-0">
+
+                        <div class="col-md-5 auth-hero p-4 p-lg-5 d-flex flex-column justify-content-center">
+                            <div class="fs-1 mb-2"><i class="bi bi-building"></i></div>
+                            <h2 class="fw-bold">CB Grievances</h2>
+                            <p class="opacity-75 mb-1">Chandrabhaga Hostel Complaint System</p>
+                            <p class="fw-semibold mb-4">Got a complaint? Don't worry, we are here to listen :) </p>
+                            <ul class="list-unstyled small mb-0">
+                                <li><i class="bi bi-camera me-2"></i>Report issues, with photos</li>
+                                <li><i class="bi bi-activity me-2"></i>Track every status update</li>
+                                <li><i class="bi bi-bell me-2"></i>Get notified when it's resolved</li>
+                            </ul>
+                        </div>
+
+                        <div class="col-md-7 p-4 p-lg-5">
+                            <h4 class="fw-bold mb-1">Welcome back</h4>
+                            <p class="text-muted mb-4">Please log in to continue.</p>
+
+                            <div th:if="${param.error != null}" class="alert alert-danger py-2">
+                                Invalid email ID / username, password or role.
+                            </div>
+                            <div th:if="${param.registered != null}" class="alert alert-success py-2">
+                                Registration successful. Please log in.
+                            </div>
+                            <div th:if="${param.logout != null}" class="alert alert-success py-2">
+                                You have been logged out.
+                            </div>
+
+                            <form th:action="@{/login}" method="post">
+                                <div class="btn-group w-100 mb-3" role="group">
+                                    <input type="radio" class="btn-check" name="role" value="RESIDENT" id="r1" checked/>
+                                    <label class="btn btn-outline-primary" for="r1">
+                                        <i class="bi bi-person me-1"></i>Resident
+                                    </label>
+                                    <input type="radio" class="btn-check" name="role" value="WARDEN" id="r2"/>
+                                    <label class="btn btn-outline-primary" for="r2">
+                                        <i class="bi bi-shield-check me-1"></i>Warden
+                                    </label>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label id="usernameLabel" class="form-label">JNU Email ID</label>
+                                    <input type="text" name="username" id="usernameInput" class="form-control"
+                                           placeholder="yourname@jnu.ac.in" required/>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label">Password</label>
+                                    <div class="input-group">
+                                        <input type="password" name="password" id="passwordInput"
+                                               class="form-control" required/>
+                                        <button type="button" id="togglePassword" class="btn btn-outline-secondary"
+                                                aria-label="Show or hide password">
+                                            <i class="bi bi-eye" id="toggleIcon"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary w-100 py-2">Login</button>
+                            </form>
+
+                            <p class="text-center text-muted mt-4 mb-0">
+                                New resident? <a th:href="@{/register}">Register here</a>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const label = document.getElementById('usernameLabel');
+    const input = document.getElementById('usernameInput');
+
+    function updateLabel() {
+        const role = document.querySelector('input[name="role"]:checked').value;
+        if (role === 'WARDEN') {
+            label.textContent = 'Email ID or Username';
+            input.placeholder = 'warden email or username';
+        } else {
+            label.textContent = 'JNU Email ID';
+            input.placeholder = 'yourname@jnu.ac.in';
+        }
+    }
+    document.querySelectorAll('input[name="role"]').forEach(function (radio) {
+        radio.addEventListener('change', updateLabel);
+    });
+    updateLabel();
+
+    const passwordInput = document.getElementById('passwordInput');
+    const toggleIcon = document.getElementById('toggleIcon');
+    document.getElementById('togglePassword').addEventListener('click', function () {
+        const hidden = passwordInput.type === 'password';
+        passwordInput.type = hidden ? 'text' : 'password';
+        toggleIcon.className = hidden ? 'bi bi-eye-slash' : 'bi bi-eye';
+    });
+</script>
+</body>
+</html>

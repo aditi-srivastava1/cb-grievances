@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('File a Complaint')}"></head>
+<body>
+<nav th:replace="~{fragments :: residentNav}"></nav>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+
+            <div class="page-header">
+                <div class="page-icon"><i class="bi bi-tools"></i></div>
+                <div>
+                    <h3 class="page-title mb-0">File a Complaint</h3>
+                    <div class="page-sub">File your complaint here in detail ⬇️</div>
+                </div>
+            </div>
+
+            <div th:if="${param.error != null}" class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle me-1"></i>
+                Photo could not be uploaded. Please use a JPG or PNG image.
+            </div>
+
+            <div class="card">
+                <div class="card-body p-4">
+                    <form th:action="@{/complaint}" th:object="${complaint}" method="post"
+                          enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label class="form-label">Category</label>
+                            <select th:field="*{category}" class="form-select">
+                                <option value="Water">Water</option>
+                                <option value="Electrical">Electrical</option>
+                                <option value="Mess/Food">Mess/Food</option>
+                                <option value="Infrastructure">Infrastructure</option>
+                                <option value="Wifi">Wifi</option>
+                                <option value="Cleanliness">Cleanliness</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea th:field="*{description}" rows="4" class="form-control"
+                                      maxlength="255" placeholder="Describe the problem (up to 255 characters)"
+                                      required></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Photo
+                                <span class="text-muted fw-normal">(optional, JPG/PNG, max 5 MB)</span>
+                            </label>
+                            <input type="file" name="photo" accept="image/png, image/jpeg" class="form-control"/>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="bi bi-send me-1"></i>Submit Complaint
+                        </button>
+                        <a th:href="@{/}" class="btn btn-outline-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+
+            <footer th:replace="~{fragments :: appFooter}"></footer>
+        </div>
+    </div>
+</div>
+</body>
+</html>

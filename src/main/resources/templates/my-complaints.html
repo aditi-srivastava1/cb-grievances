@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('My Complaints')}"></head>
+<body>
+<nav th:replace="~{fragments :: residentNav}"></nav>
+
+<div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+        <div class="page-header">
+            <div class="page-icon"><i class="bi bi-card-checklist"></i></div>
+            <div>
+                <h3 class="page-title mb-0">My Complaints</h3>
+                <div class="page-sub">View all your filed complaints here</div>
+            </div>
+        </div>
+        <a th:href="@{/complaint}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i>File a New Complaint
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Photo</th>
+                    <th>Date Filed</th>
+                    <th>Status</th>
+                    <th>Feedback</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="complaint : ${complaints}">
+                    <td class="fw-semibold" th:text="${complaint.category}"></td>
+                    <td th:text="${complaint.description}"></td>
+                    <td>
+                        <a th:if="${complaint.photoFileName != null}"
+                           th:href="@{/photos/{f}(f=${complaint.photoFileName})}" target="_blank">
+                            <img th:src="@{/photos/{f}(f=${complaint.photoFileName})}"
+                                 class="img-thumbnail" style="width:80px;" alt="photo"/>
+                        </a>
+                        <span th:if="${complaint.photoFileName == null}" class="text-muted">-</span>
+                    </td>
+                    <td class="text-nowrap" th:text="${complaint.dateFiled}"></td>
+                    <td><span th:replace="~{fragments :: statusBadge(${complaint.status})}"></span></td>
+                    <td>
+                        <span th:if="${complaint.status == 'Completed' and feedbackGiven.contains(complaint.id)}"
+                              class="text-success small fw-semibold">
+                            <i class="bi bi-check-circle me-1"></i>Feedback given
+                        </span>
+                        <a th:if="${complaint.status == 'Completed' and !feedbackGiven.contains(complaint.id)}"
+                           th:href="@{/feedback/{id}(id=${complaint.id})}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-chat-heart me-1"></i>Give Feedback
+                        </a>
+                        <form th:if="${complaint.status == 'Completed' and lowRated.contains(complaint.id)}"
+                              th:action="@{/complaint/{id}/reopen(id=${complaint.id})}" method="post" class="mt-1">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i>Reopen
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(complaints)}">
+                    <td colspan="6" class="text-center text-muted py-5">
+                        <div class="fs-1">🕊️</div>
+                        Abhi tak koi shikayat nahi. Sab theek hai!
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments :: appFooter}"></footer>
+</div>
+</body>
+</html>
